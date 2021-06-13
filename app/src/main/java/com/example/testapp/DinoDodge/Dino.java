@@ -7,5 +7,5 @@ public class Dino
     public int x = 600;
     public int y = 807 - HEIGHT;
     public int velocity = 550;
-    public int gravity = 900;
+    public int gravity = 950;
 }

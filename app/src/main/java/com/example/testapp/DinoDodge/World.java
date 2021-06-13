@@ -1,6 +1,9 @@
 package com.example.testapp.DinoDodge;
 
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.testapp.GameEngine;
 
@@ -28,12 +31,6 @@ public class World
     boolean p1Jumping = false;
     int p1Velocity = 0;
 
-    Dino p2Dino = new Dino();
-    boolean p2Alive = true;
-    boolean p2Ducking = false;
-    boolean p2Jumping = false;
-    int p2Velocity = 0;
-
     public int maxEnemies = 4;
     List<BlockEnemy> blockEnemyList = new ArrayList<>();
 
@@ -43,13 +40,13 @@ public class World
         this.gameEngine = gameEngine;
         this.listener = listener;
         initializeEnemies();
-        p2Dino.x = p2Dino.x + 270;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void update(float deltaTime)
     {
 
-        if(!p1Alive && !p2Alive)
+        if(!p1Alive)
         {
             gameOver = true;
         }
@@ -102,45 +99,6 @@ public class World
             }
         }
 
-        //Player 2 Jump movement
-        p2Ducking = false;
-
-        if(p2Jumping)
-        {
-            p2Dino.y -= p2Velocity * deltaTime;
-            p2Velocity -= p2Dino.gravity * deltaTime;
-        }
-
-        if(p2Dino.y + Dino.HEIGHT > MAX_Y - 1)
-        {
-            p2Jumping = false;
-            p2Dino.y = (int) MAX_Y - Dino.HEIGHT;
-        }
-
-        //Player 2
-        if (gameEngine.isTouchDown(0) && !p2Jumping)
-        {
-            if(!gameEngine.isTouchDown(1))
-            {
-                if (gameEngine.getTouchX(0) < 1820 && gameEngine.getTouchY(0) > 900)
-                {
-                    if (gameEngine.getTouchX(0) > 1720 && gameEngine.getTouchY(0) < 1000)
-                    {
-                        p2Velocity = p2Dino.velocity;
-                        p2Jumping = true;
-                    }
-                }
-                if (gameEngine.getTouchX(0) < 1670 && gameEngine.getTouchY(0) > 900)
-                {
-                    if (gameEngine.getTouchX(0) > 1570 && gameEngine.getTouchY(0) < 1000)
-                    {
-                        p2Ducking = true;
-                    }
-                }
-            }
-        }
-
-
         BlockEnemy blockEnemy;
         BlockEnemy prevBlockEnemy;
         for (int i = 0; i < maxEnemies; i++)
@@ -160,8 +118,12 @@ public class World
             {
                 Random random = new Random();
                 boolean isItABird = random.nextBoolean();
-                int randX = random.nextInt(200) + 100;
+                int randX = random.nextInt(250);
                 int randY = random.nextInt(220) + 20;
+
+                if (1920 - getLatestEnemyX(i) < 150) {
+                    randX += 150 - (1920 - getLatestEnemyX(i));
+                }
 
                 if(!isItABird)
                 {
@@ -226,25 +188,6 @@ public class World
                     }
                 }
             }
-
-            if (p2Alive)
-            {
-                if (p2Ducking)
-                {
-                    if (rectCollision(p2Dino.x, p2Dino.y + 100, Dino.WIDTH, Dino.HEIGHT,
-                            blockEnemy.x, blockEnemy.y, BlockEnemy.WIDTH, BlockEnemy.HEIGHT))
-                    {
-                        p2Alive = false;
-                    }
-                } else
-                {
-                    if (rectCollision(p2Dino.x + (Dino.WIDTH / 3.f), p2Dino.y, (Dino.WIDTH / 3.f), Dino.HEIGHT,
-                            blockEnemy.x, blockEnemy.y, BlockEnemy.WIDTH, BlockEnemy.HEIGHT))
-                    {
-                        p2Alive = false;
-                    }
-                }
-            }
         }
     }
 
@@ -255,22 +198,38 @@ public class World
         for (int i = 0; i < maxEnemies; i++)
         {
             boolean isItABird = random.nextBoolean();
-            Log.d("", "" + isItABird);
+            int randX = random.nextInt(250) + 150;
+            int randY = random.nextInt(220) + 20;
 
             if(!isItABird)
             {
-                int randX = random.nextInt(300) + 100;
                 BlockEnemy blockEnemy = new BlockEnemy((1920 + randX) + i * 450 + BlockEnemy.WIDTH, 807 - BlockEnemy.HEIGHT);
 
                 blockEnemyList.add(blockEnemy);
             }else
             {
-                int randX = random.nextInt(300) + 100;
-                int randY = random.nextInt(220) + 20;
                 BlockEnemy blockEnemy = new BlockEnemy((1920 + randX) + i * 450 + BlockEnemy.WIDTH, 807 - BlockEnemy.HEIGHT - randY);
 
                 blockEnemyList.add(blockEnemy);
             }
         }
+    }
+
+    private int getLatestEnemyX(int currentIndex) {
+        int latestIndex = 0;
+
+        if (currentIndex == 0) {
+            latestIndex = 3;
+        } else if (currentIndex == 3) {
+            latestIndex = 1;
+        } else {
+            latestIndex = currentIndex - 1;
+        }
+
+        if (blockEnemyList == null) {
+            return 0;
+        }
+
+        return blockEnemyList.get(latestIndex).x;
     }
 }

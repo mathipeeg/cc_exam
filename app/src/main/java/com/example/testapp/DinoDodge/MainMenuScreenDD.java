@@ -1,6 +1,9 @@
 package com.example.testapp.DinoDodge;
 
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.testapp.GameEngine;
 import com.example.testapp.Screen;
@@ -13,7 +16,8 @@ public class MainMenuScreenDD extends Screen
     float passedTime = 0;
     long startTime;
 
-    public MainMenuScreenDD(GameEngine gameEngine)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public MainMenuScreenDD(GameEngine gameEngine) // initial screen
     {
         super(gameEngine);
         background = gameEngine.loadBitmap("DinoDodge/MainMenuDD.png");
@@ -21,6 +25,7 @@ public class MainMenuScreenDD extends Screen
         startTime = System.nanoTime();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void update(float deltaTime)
     {

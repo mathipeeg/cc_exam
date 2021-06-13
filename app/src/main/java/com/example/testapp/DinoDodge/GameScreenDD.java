@@ -3,7 +3,10 @@ package com.example.testapp.DinoDodge;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.testapp.GameEngine;
 import com.example.testapp.Screen;
@@ -47,6 +50,7 @@ public class GameScreenDD extends Screen
     String showText = "No text was found";
     int score = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public GameScreenDD(GameEngine gameEngine, float deltaTime)
     {
         super(gameEngine);
@@ -86,6 +90,7 @@ public class GameScreenDD extends Screen
         renderer = new WorldRenderer(gameEngine, world, deltaTime);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void update(float deltaTime)
     {
@@ -116,7 +121,7 @@ public class GameScreenDD extends Screen
             }
         }
 
-        if (state == State.Running && gameEngine.getTouchY(0) < 40
+        if (state == State.Running && gameEngine.getTouchY(0) < 40 // pause
                 && gameEngine.getTouchX(0) > 320 - 40)
         {
             Log.d("GameScreen", "Pausing the game");
@@ -164,6 +169,7 @@ public class GameScreenDD extends Screen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void pause()
     {
@@ -174,6 +180,7 @@ public class GameScreenDD extends Screen
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void resume()
     {

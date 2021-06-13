@@ -59,8 +59,6 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     public boolean volDown = false;
 
 
-
-
     public abstract com.example.testapp.Screen createStartScreen();
     public void setScreen(com.example.testapp.Screen screen)
     {
@@ -84,8 +82,6 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
         setContentView(surfaceView);
         surfaceHolder = surfaceView.getHolder();
         screen = createStartScreen();
-
-
 
 
         touchHandler = new MultiTouchHandler(surfaceView, touchEventBuffer, touchEventPool);
@@ -114,7 +110,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     {
         if (offScreenSurface != null) offScreenSurface.recycle();
 
-        offScreenSurface = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        offScreenSurface = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565); // todo: huh?
         canvas = new Canvas(offScreenSurface);
 
     }
@@ -173,7 +169,6 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     {
         if (canvas != null)
         {
-
             src.left = srcX;
             src.top = srcY;
             src.right = srcX + srcWidth;
@@ -293,7 +288,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
         //event.values array to accelerometer array from SRC position 0 to DEST position, first 3
     }
 
-    private void fillEvents()
+    private void fillEvents() // todo: what this be
     {
         synchronized (touchEventBuffer)
         {
@@ -404,7 +399,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     }
 
 
-    public void onPause()
+    public void onPause() // todo: what we do here?
     {
         super.onPause();
         synchronized (stateChanges)
@@ -426,7 +421,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
 
     }
 
-    @Override
+    /*@Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int action = event.getAction();
         int keyCode = event.getKeyCode();
@@ -450,7 +445,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
             default:
                 return super.dispatchKeyEvent(event);
         }
-    }
+    }*/
 
 
     public void onResume()
@@ -474,7 +469,4 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
 
         }
     }
-
-
-
 }
