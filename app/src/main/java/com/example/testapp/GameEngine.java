@@ -35,6 +35,7 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public abstract class GameEngine extends Activity implements Runnable, TouchHandler, SensorEventListener
 {
+    // RANDOM COMMENT
 
     private Thread mainLoopThread;
     private com.example.testapp.State state = com.example.testapp.State.Paused;
