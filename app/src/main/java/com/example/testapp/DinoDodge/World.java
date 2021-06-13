@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class World
 {
     GameEngine gameEngine;
@@ -42,7 +42,6 @@ public class World
         initializeEnemies();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void update(float deltaTime)
     {
 
@@ -61,22 +60,10 @@ public class World
                 p1Velocity -= p1Dino.gravity * deltaTime;
             }
 
-            if (p1Dino.y + Dino.HEIGHT > MAX_Y - 1)
+            if (p1Dino.y + Dino.HEIGHT > MAX_Y - 1) // todo: what this do?
             {
                 p1Jumping = false;
                 p1Dino.y = (int) MAX_Y - Dino.HEIGHT;
-            }
-
-            //Player 1
-            if (gameEngine.volDown && !p1Jumping)
-            {
-                p1Ducking = true;
-            }
-
-            if (gameEngine.volUp && !p1Jumping)
-            {
-                p1Velocity = p1Dino.velocity;
-                p1Jumping = true;
             }
 
             if (gameEngine.isTouchDown(0) && !gameEngine.isTouchDown(1) && !p1Jumping && gameEngine.getTouchX(0) < 400)
@@ -89,6 +76,7 @@ public class World
                         p1Jumping = true;
                     }
                 }
+
                 if (gameEngine.getTouchX(0) < 350 && gameEngine.getTouchY(0) > 900)
                 {
                     if (gameEngine.getTouchX(0) > 250 && gameEngine.getTouchY(0) < 1000)
@@ -105,7 +93,7 @@ public class World
         {
             blockEnemy = blockEnemyList.get(i);
 
-            if (i == 0)
+            if (i == 0) // todo: pls forklar alt med previous (også l. 119 og videre)
             {
                 prevBlockEnemy = blockEnemyList.get(i + maxEnemies - 1);
             } else
@@ -114,14 +102,15 @@ public class World
             }
 
             blockEnemy.x -= roadSpeed * deltaTime;
-            if (blockEnemy.x < 0 - BlockEnemy.WIDTH)
+
+            if (blockEnemy.x < -BlockEnemy.WIDTH)
             {
                 Random random = new Random();
                 boolean isItABird = random.nextBoolean();
                 int randX = random.nextInt(250);
                 int randY = random.nextInt(220) + 20;
 
-                if (1920 - getLatestEnemyX(i) < 150) {
+                if (1920 - getLatestEnemyX(i) < 150) { // todo: tilføjer 150 til x koordinat, hvis den er for tæt på forrige?
                     randX += 150 - (1920 - getLatestEnemyX(i));
                 }
 
@@ -216,6 +205,7 @@ public class World
     }
 
     private int getLatestEnemyX(int currentIndex) {
+        // finder den seneste fjende i listen
         int latestIndex = 0;
 
         if (currentIndex == 0) {

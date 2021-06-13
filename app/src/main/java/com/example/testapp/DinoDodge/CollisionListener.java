@@ -1,6 +1,6 @@
 package com.example.testapp.DinoDodge;
 
-public interface CollisionListener
+public interface CollisionListener // todo: unused?
 {
     public void collisionEdge();
     public void collisionMonster();

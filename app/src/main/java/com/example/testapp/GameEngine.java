@@ -37,15 +37,15 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
 {
 
     private Thread mainLoopThread;
-    private com.example.testapp.State state = com.example.testapp.State.Paused;
-    private List<com.example.testapp.State> stateChanges = new ArrayList<>();
+    private State state = State.Paused;
+    private List<State> stateChanges = new ArrayList<>();
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private Canvas canvas = null;
-    private com.example.testapp.Screen screen = null;
+    private Screen screen = null;
     private Bitmap offScreenSurface = null;
     private TouchHandler touchHandler;
-    private com.example.testapp.TouchEventPool touchEventPool = new com.example.testapp.TouchEventPool();
+    private TouchEventPool touchEventPool = new TouchEventPool();
     private List<TouchEvent> touchEventBuffer = new ArrayList<>();
     private List<TouchEvent> touchEventCopied = new ArrayList<>();
     private float[] accelerometer = new float[3];   //the hold the g-forces in 3 dimensions x, y, z
@@ -55,12 +55,10 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     long lastTime = 0;
     Paint paint = new Paint();
     public Music music;
-    public boolean volUp = false;
-    public boolean volDown = false;
 
+    public abstract Screen createStartScreen();
 
-    public abstract com.example.testapp.Screen createStartScreen();
-    public void setScreen(com.example.testapp.Screen screen)
+    public void setScreen(Screen screen)
     {
         if (this.screen != null)
         {
@@ -71,7 +69,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(Bundle savedInstanceState) // todo: look into onCreate!
     {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -92,27 +90,24 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
             manager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
         }
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
-
     }
 
     public int getFrameBufferWidth()
     {
         return offScreenSurface.getWidth();
-    }
+    } // todo: look into?
 
     public int getFrameBufferHeight()
     {
         return  offScreenSurface.getHeight();
-    }
+    } // todo: look into?
 
-    public void setOffScreenSurface(int width, int height)
+    public void setOffScreenSurface(int width, int height) // todo: har at gøre med orientation?
     {
         if (offScreenSurface != null) offScreenSurface.recycle();
 
-        offScreenSurface = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565); // todo: huh?
+        offScreenSurface = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
         canvas = new Canvas(offScreenSurface);
-
     }
 
     public Bitmap loadBitmap(String fileName)
@@ -144,12 +139,12 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
                 }catch (IOException ioe)
                 {
                     throw new RuntimeException("Couldn't close file: " + fileName);
-                } // 2nd try catch
-            } //If statement
-        }//1st try/catch/finally
+                }
+            }
+        }
     }
 
-    public void clearFrameBuffer(int color)
+    public void clearFrameBuffer(int color) // todo: useless?
     {
         canvas.drawColor(color);
     }
@@ -164,7 +159,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
 
     Rect src = new Rect();
     Rect dst = new Rect();
-    public void drawBitmap(Bitmap bitmap, int x, int y, int srcX, int srcY,
+    public void drawBitmap(Bitmap bitmap, int x, int y, int srcX, int srcY, // todo: exact diff between these two / why not just this one?
                            int srcWidth, int srcHeight)
     {
         if (canvas != null)
@@ -209,17 +204,6 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
             e.printStackTrace();
             throw new RuntimeException("Couldn't load the file: " + filename);
         }
-    }
-
-    public Typeface loadFont(String fileName)
-    {
-        Typeface font = Typeface.createFromAsset(getAssets(), fileName);
-        if (font == null)
-        {
-            throw new RuntimeException("Couldn't load the font from file " + fileName);
-
-        }
-        return font;
     }
 
     public void drawText(Typeface font, String text, int x, int y, int color, int size)
@@ -272,10 +256,10 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
         return scaledY;
     }
 
-    public float[] getAccelerometer()
-    {
-        return accelerometer;
-    }
+//    public float[] getAccelerometer()
+//    {
+//        return accelerometer;
+//    }
 
     public void onAccuracyChanged(Sensor sensor, int accuracy)
     {
@@ -288,9 +272,9 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
         //event.values array to accelerometer array from SRC position 0 to DEST position, first 3
     }
 
-    private void fillEvents() // todo: what this be
+    private void fillEvents()
     {
-        synchronized (touchEventBuffer)
+        synchronized (touchEventBuffer) // todo: look into and remember what synchronized is
         {
             int stop = touchEventBuffer.size();
             for (int i = 0; i < stop; i++)
@@ -308,7 +292,7 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
             int stop = touchEventCopied.size();
             for (int i = 0; i < stop; i++)
             {
-                touchEventPool.free(touchEventCopied.get(i));
+                touchEventPool.free(touchEventCopied.get(i)); // todo: free?
             }
             touchEventCopied.clear();
         }
@@ -319,44 +303,41 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
         return framesPerSecond;
     }
 
-    public void run()
+    public void run() // todo: ye i'm gonna need to go through this one.
     {
         int frames = 0;
         long startTime = System.nanoTime();
         while (true)
         {
-            synchronized (stateChanges)
+            synchronized (stateChanges) // list with State states
             {
                 for (int i = 0; i < stateChanges.size(); i++)
                 {
                     state = stateChanges.get(i);
-                    if (state == com.example.testapp.State.Disposed)
+                    if (state == State.Disposed)
                     {
                         Log.d("GameEngine", "state changed to Disposed");
                         return;
                     }
-                    if(state == com.example.testapp.State.Paused)
+                    if(state == State.Paused)
                     {
                         Log.d("GameEngine", "state changed to Paused");
                         return;
                     }
-                    if(state == com.example.testapp.State.Resumed)
+                    if(state == State.Resumed)
                     {
                         Log.d("GameEngine", "state changed to Resumed");
-                        state = com.example.testapp.State.Running;
+                        state = State.Running;
                     }
-                } //End of the for loop
+                }
                 stateChanges.clear();
 
-                if (state == com.example.testapp.State.Running)
+                if (state == State.Running)
                 {
-                    //Log.d("GameEngine", "State is running");
                     if (!surfaceHolder.getSurface().isValid())
                     {
                         continue;
                     }
-                    //Log.d("GameEngine", "Trying to get Canvas");
-
 
                     //All the drawing code should happens here
                     Canvas canvas = surfaceHolder.lockCanvas();
@@ -399,18 +380,18 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
     }
 
 
-    public void onPause() // todo: what we do here?
+    public void onPause() // todo: pause working? also wtf?
     {
         super.onPause();
         synchronized (stateChanges)
         {
             if (!isFinishing())
             {
-                stateChanges.add(stateChanges.size(), com.example.testapp.State.Paused);
+                stateChanges.add(stateChanges.size(), State.Paused);
             }
             else
             {
-                stateChanges.add(stateChanges.size(), com.example.testapp.State.Disposed);
+                stateChanges.add(stateChanges.size(), State.Disposed);
             }
         }
         if (isFinishing())
@@ -421,43 +402,14 @@ public abstract class GameEngine extends Activity implements Runnable, TouchHand
 
     }
 
-    /*@Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    volUp = true;
-                }
-                if (action == KeyEvent.ACTION_UP) {
-                    volUp = false;
-                }
-                return true;
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    volDown = true;
-                }
-                if (action == KeyEvent.ACTION_UP) {
-                    volDown = false;
-                }
-                return true;
-            default:
-                return super.dispatchKeyEvent(event);
-        }
-    }*/
-
-
-    public void onResume()
+    public void onResume() // todo: um... halp
     {
         super.onResume();
 
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-            //setOffScreenSurface(480, 320);
             setOffScreenSurface(1920, 1080);
         }
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            //setOffScreenSurface(320, 480);
             setOffScreenSurface(1080, 1920);
         }
 

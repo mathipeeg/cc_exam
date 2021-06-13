@@ -3,7 +3,7 @@ package com.example.testapp;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Pool<T>
+public abstract class Pool<T> // todo: What the hell does this do, haha
 {
     private List<T> items = new ArrayList<>();
 

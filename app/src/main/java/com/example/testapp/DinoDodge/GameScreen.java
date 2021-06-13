@@ -15,8 +15,8 @@ import com.example.testapp.TouchEvent;
 
 import java.util.List;
 
-
-public class GameScreenDD extends Screen
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP) // todo: find out what the hell this is
+public class GameScreen extends Screen
 {
     enum State
     {
@@ -50,8 +50,7 @@ public class GameScreenDD extends Screen
     String showText = "No text was found";
     int score = 0;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public GameScreenDD(GameEngine gameEngine, float deltaTime)
+    public GameScreen(GameEngine gameEngine, float deltaTime)
     {
         super(gameEngine);
         ground = gameEngine.loadBitmap("DinoDodge/Ground.png");
@@ -62,11 +61,11 @@ public class GameScreenDD extends Screen
         backGround = gameEngine.loadBitmap("DinoDodge/sky-2.png");
         backGroundFront = gameEngine.loadBitmap("DinoDodge/rocks_2-2.png");
         backGroundMiddle = gameEngine.loadBitmap("DinoDodge/rocks_1-2.png");
-        gameOver = gameEngine.loadBitmap("CarScroller/gameover.png");
-        resume = gameEngine.loadBitmap("CarScroller/resume.png");
-        bounceSound = gameEngine.loadSound("CarScroller/bounce.wav");
-        crashSound = gameEngine.loadSound("CarScroller/blocksplosion.wav");
-        gameoverSound = gameEngine.loadSound("CarScroller/gameover.wav");
+        gameOver = gameEngine.loadBitmap("DinoDodge/gameover.png");
+        resume = gameEngine.loadBitmap("DinoDodge/resume.png");
+        bounceSound = gameEngine.loadSound("DinoDodge/bounce.wav");
+        crashSound = gameEngine.loadSound("DinoDodge/blocksplosion.wav");
+        gameoverSound = gameEngine.loadSound("DinoDodge/gameover.wav");
         world = new World(gameEngine, new CollisionListener()
         {
             @Override
@@ -90,7 +89,6 @@ public class GameScreenDD extends Screen
         renderer = new WorldRenderer(gameEngine, world, deltaTime);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void update(float deltaTime)
     {
@@ -100,7 +98,7 @@ public class GameScreenDD extends Screen
             pause();
         }
 
-        if(state == State.Paused && gameEngine.getTouchEvents().size() > 0)
+        if(state == State.Paused && gameEngine.getTouchEvents().size() > 0) // todo: paused working?
         {
             Log.d("GameScreen:", "Starting the game.");
             state = State.Running;
@@ -115,7 +113,7 @@ public class GameScreenDD extends Screen
             {
                 if(touchEvents.get(i).type == TouchEvent.TouchEventType.Up)
                 {
-                    gameEngine.setScreen(new MainMenuScreenDD(gameEngine));
+                    gameEngine.setScreen(new MainMenuScreen(gameEngine));
                     return;
                 }
             }
@@ -158,7 +156,7 @@ public class GameScreenDD extends Screen
         gameEngine.drawText(font, showText, 720, 940, Color.BLACK, 100);
         renderer.render(deltaTime);
 
-        if (state == State.Paused)
+        if (state == State.Paused) // todo: paused working?
         {
             gameEngine.drawBitmap(resume, 960 - resume.getWidth()/2, 540 - resume.getHeight()/2);
         }
@@ -169,9 +167,8 @@ public class GameScreenDD extends Screen
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void pause()
+    public void pause() // todo: paused working?
     {
         if (state == State.Running)
         {
@@ -180,9 +177,8 @@ public class GameScreenDD extends Screen
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public void resume()
+    public void resume() // todo: paused working?
     {
         if (state == State.Paused)
         {

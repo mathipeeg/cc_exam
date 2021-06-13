@@ -9,7 +9,7 @@ import com.example.testapp.GameEngine;
 import com.example.testapp.Screen;
 
 
-public class MainMenuScreenDD extends Screen
+public class MainMenuScreen extends Screen
 {
     Bitmap background;
     Bitmap startGame;
@@ -17,7 +17,7 @@ public class MainMenuScreenDD extends Screen
     long startTime;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MainMenuScreenDD(GameEngine gameEngine) // initial screen
+    public MainMenuScreen(GameEngine gameEngine) // initial screen
     {
         super(gameEngine);
         background = gameEngine.loadBitmap("DinoDodge/MainMenuDD.png");
@@ -31,7 +31,7 @@ public class MainMenuScreenDD extends Screen
     {
         if (gameEngine.isTouchDown(0) && (passedTime) > 0.5f)
         {
-            gameEngine.setScreen(new GameScreenDD(gameEngine, deltaTime));
+            gameEngine.setScreen(new GameScreen(gameEngine, deltaTime));
             return;
         }
         gameEngine.drawBitmap(background, 0, 0);

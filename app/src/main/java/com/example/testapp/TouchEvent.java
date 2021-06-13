@@ -16,6 +16,6 @@ public class TouchEvent
     public int y;                   // the y coordinate of the event
     public int rawX;                // the x coordinate of the event
     public int rawY;                // the y coordinate of the event
-    public int pointer;             // the pointer id (from the android system)
+    public int pointer;             // the pointer id (from the android system) // todo: the hell is pointerId?
 
 }

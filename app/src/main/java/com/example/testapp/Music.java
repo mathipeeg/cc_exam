@@ -7,10 +7,10 @@ import java.io.IOException;
 
 public class Music implements MediaPlayer.OnCompletionListener
 {
-    private MediaPlayer mediaPlayer;        //Mediaplayer doing the music
-    private boolean isPrepared = false;     //Is the mediaplayer ready?
+    private MediaPlayer mediaPlayer;   //Mediaplayer doing the music
+    private boolean isPrepared = false;    //Is the mediaplayer ready?
 
-    public Music(AssetFileDescriptor assetFileDescriptor)
+    public Music(AssetFileDescriptor assetFileDescriptor) // todo: is this standard copy stuff, or do I need to understand?
     {
         mediaPlayer = new MediaPlayer();
         try

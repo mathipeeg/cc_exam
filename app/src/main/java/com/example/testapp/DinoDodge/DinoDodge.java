@@ -7,16 +7,16 @@ import androidx.annotation.RequiresApi;
 import com.example.testapp.GameEngine;
 import com.example.testapp.Screen;
 
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class DinoDodge extends GameEngine
 {
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public Screen createStartScreen()
     {
         music = this.loadMusic("CarScroller/music.ogg");
-        return new MainMenuScreenDD(this);
+        return new MainMenuScreen(this);
     }
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
     public void onResume()
     {
         super.onResume();
@@ -24,8 +24,7 @@ public class DinoDodge extends GameEngine
         music.setLooping(true);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public void onPause()
+    public void onPause() // todo: pause working?
     {
         super.onPause();
         music.pause();

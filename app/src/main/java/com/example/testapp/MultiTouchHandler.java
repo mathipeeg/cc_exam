@@ -13,10 +13,10 @@ public class MultiTouchHandler implements TouchHandler, View.OnTouchListener
     private int[] touchRawX = new int[20];
     private int[] touchRawY = new int[20];
 
-    private List<com.example.testapp.TouchEvent> touchEventBuffer;  //Buffer with touch
-    private com.example.testapp.TouchEventPool touchEventPool;      //Pool with  re-usable TouchEvent objects
+    private List<TouchEvent> touchEventBuffer;  //Buffer with touch
+    private TouchEventPool touchEventPool;  //Pool with  re-usable TouchEvent objects
 
-    public MultiTouchHandler(View view, List<com.example.testapp.TouchEvent> touchEventBuffer, com.example.testapp.TouchEventPool touchEventPool)
+    public MultiTouchHandler(View view, List<TouchEvent> touchEventBuffer, TouchEventPool touchEventPool)
     {
         view.setOnTouchListener(this);
         this.touchEventBuffer = touchEventBuffer;
@@ -28,9 +28,9 @@ public class MultiTouchHandler implements TouchHandler, View.OnTouchListener
     }
 
     @Override
-    public boolean onTouch(View v, MotionEvent event)
+    public boolean onTouch(View v, MotionEvent event) // todo: is this just like standard copy stuff? Or do i need to understand it?
     {
-        com.example.testapp.TouchEvent touchEvent = null;
+        TouchEvent touchEvent = null;
         int action = event.getAction() & MotionEvent.ACTION_MASK;
         int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >>
                 MotionEvent.ACTION_POINTER_INDEX_SHIFT;

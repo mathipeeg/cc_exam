@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.testapp.GameEngine;
 
-
+@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class WorldRenderer
 {
     GameEngine gameEngine;
@@ -23,11 +23,9 @@ public class WorldRenderer
     float startTime;
     float timer;
     float timer1;
-    float timer2;
     int p1Idx = 0;
     int idx = 0;
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public WorldRenderer (GameEngine gameEngine, World world, float deltaTime)
     {
         this.gameEngine = gameEngine;
@@ -42,14 +40,13 @@ public class WorldRenderer
         startTime = deltaTime;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void render(float deltaTime)
     {
         if (!world.gameOver)
         {
             timer += deltaTime;
 
-            if (!world.p1Ducking && !world.p1Jumping)
+            if (!world.p1Ducking && !world.p1Jumping) // todo: what does this one do?
             {
                 timer1 = 0;
                 idx = 0;
@@ -109,7 +106,7 @@ public class WorldRenderer
                             gameEngine.drawBitmap(p1DuckImg, world.p1Dino.x, world.p1Dino.y, 0, 0, 194, 168);
                     }
 
-                    if (timer1 - startTime > 0.01)
+                    if (timer1 - startTime > 0.01) // todo: again - what does this do?
                     {
                         if (idx < 4)
                         {
@@ -140,22 +137,18 @@ public class WorldRenderer
                 }
             }
 
-
-            if (timer - startTime > 0.175)
+            if (timer - startTime > 0.175) // todo: again haha what?
             {
                 p1Idx++;
                 if (p1Idx == 7)
                 {
                     p1Idx = 0;
                 }
-
                 timer = 0;
-
             }
 
             gameEngine.drawBitmap(jumpButtonImg, 100, 900);
             gameEngine.drawBitmap(duckImg, 250, 900);
-
 
             for (int i = 0; i < world.blockEnemyList.size(); i++)
             {
